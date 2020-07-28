@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>sisfac</artifactId>
+		<groupId>com.adellapo</groupId>
+		<version>1.0</version>
+	</parent>
+
+	<artifactId>sisfac-ear</artifactId>
+	<packaging>ear</packaging>
+
+	<name>sisfac-ear</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.ear.plugin>2.8</version.ear.plugin>
+		<version.ear.plugin.conf>6</version.ear.plugin.conf>
+	</properties>
+
+	<dependencies>
+
+
+		<dependency>
+			<groupId>com.adellapo</groupId>
+			<artifactId>sisfac-web</artifactId>
+			<version>${version.sisfac}</version>
+			<type>war</type>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.adellapo</groupId>
+			<artifactId>sisfac-ejb</artifactId>
+			<version>${version.sisfac}</version>
+			<type>ejb</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<version>6</version>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
