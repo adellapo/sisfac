@@ -24,6 +24,16 @@
 		<version.dependency.plugin>2.6</version.dependency.plugin>
 	</properties>
 
+	<repositories>
+
+		<repository>
+			<id>prima-repo</id>
+			<name>Primeface Maven Repository</name>
+			<url>https://repository.primefaces.org/</url>
+		</repository>
+
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -43,7 +53,7 @@
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
 			<plugins>
-			
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -105,7 +115,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<packaging>pom</packaging>
 
 </project>
