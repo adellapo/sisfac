@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
             
     
-    <wb-module deploy-name="sisfac-ear-1.0">
+    <wb-module deploy-name="sisfac">
                         
         
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
@@ -12,6 +12,12 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="sisfac-ejb-1.0.jar" deploy-path="/" handle="module:/resource/sisfac-ejb/sisfac-ejb">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="eclipselink-3.0.0-M1.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/eclipse/persistence/eclipselink/3.0.0-M1/eclipselink-3.0.0-M1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="javax.persistence-2.1.0-RC1.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/eclipse/persistence/javax.persistence/2.1.0-RC1/javax.persistence-2.1.0-RC1.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
                     

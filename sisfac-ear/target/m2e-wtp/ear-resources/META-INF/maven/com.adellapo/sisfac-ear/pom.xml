@@ -18,6 +18,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.ear.plugin>2.8</version.ear.plugin>
 		<version.ear.plugin.conf>6</version.ear.plugin.conf>
+		<nombreapp>sisfac</nombreapp>
+		<jboss.deploy.dir>C:\tools\wildfly-10.1.0.Final\standalone\deployments\</jboss.deploy.dir>
 	</properties>
 
 	<dependencies>
@@ -30,7 +32,7 @@
 			<type>war</type>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.adellapo</groupId>
 			<artifactId>sisfac-ejb</artifactId>
@@ -40,7 +42,9 @@
 	</dependencies>
 
 	<build>
+		<finalName>${nombreapp}</finalName>
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
@@ -49,6 +53,26 @@
 					<version>6</version>
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<configuration>
+							<tasks>
+								<delete
+									file="${jboss.deploy.dir}/${nombreapp}.ear.deployed" />
+								<copy file="target/${nombreapp}.ear"
+									tofile="${jboss.deploy.dir}/${nombreapp}.ear" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
