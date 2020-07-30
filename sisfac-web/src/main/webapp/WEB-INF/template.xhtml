@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+
+<h:body>
+
+	<p:layout fullPage="true">
+
+		<p:layoutUnit position="north" size="100">
+		</p:layoutUnit>
+
+		<p:layoutUnit position="south" size="100" header="Créditos"
+			resizable="true" closable="true" collapsible="true">
+			<h:outputText value="Desarrollado por Andrés M. Della Porta - 2020" />
+		</p:layoutUnit>
+
+		<p:layoutUnit position="west" size="200" header="Menú General"
+			resizable="true" closable="true" collapsible="true">
+			<h:outputText value="West unit content." />
+		</p:layoutUnit>
+
+		<p:layoutUnit position="east" size="200" header="Ayuda"
+			resizable="true" closable="true" collapsible="true" effect="drop">
+
+			<ui:insert name="ayuda">
+				<p:outputLabel value="No existe ayuda." />
+			</ui:insert>
+
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center">
+
+			<h:form id="frmGen">
+
+				<ui:insert name="contenido">
+					<p:outputLabel value="Bienvenidos" />
+				</ui:insert>
+
+			</h:form>
+
+		</p:layoutUnit>
+
+	</p:layout>
+
+</h:body>
+
+</html>
