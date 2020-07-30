@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		
+	</h:head>
+
+	<h:form id="frmLog">
+		
+		<p:growl id="menGen"/>
+		
+		<p:panelGrid id="panGriUsu" columns="1">
+			
+			<f:facet name="header">
+				<p:outputLabel value="Credenciales SISFAC"/>
+			</f:facet>
+			
+			<p:outputLabel value="Usuario:" for="txtNomUsu"/>
+			<p:inputText id="txtNomUsu" required="true" maxlength="10" value="#{myLoginBean.usuario}"/>
+			
+			<p:outputLabel value="Clave:" for="txtClaUsu"/>
+			<p:password id="txtClaUsu" required="true" maxlength="10" value="#{myLoginBean.clave}"/>
+			
+			<p:commandButton value="Ingresar" process="@this :frmLog:panGriUsu" actionListener="#{myLoginBean.validarUsuario}" update=":frmLog:menGen"/>
+		
+		</p:panelGrid>
+	
+	</h:form>
+	
+	
+</html>
