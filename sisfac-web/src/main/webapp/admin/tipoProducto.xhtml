@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="contenido">
+
+		<!-- Barra de herramientas -->
+		<p:toolbar>
+			<f:facet name="right">
+				<p:commandButton value="Nuevo" icon="ui-icon-document" />
+				<p:commandButton value="Guardar" icon="ui-icon-disk" />
+				<span class="ui-separator"> <span
+					class="ui-icon ui-icon-grip-dotted-vertical" />
+				</span>
+				<i class="pi pi-ellipsis-v"></i>
+				<p:commandButton value="Editar" icon="ui-icon-pencil" />
+				<p:commandButton value="Eliminar" icon="ui-icon-trash" />
+			</f:facet>
+		</p:toolbar>
+
+		<!-- Panel para realizar el ingreso de la información -->
+		<p:panelGrid id="panGriTipPro" columns="2">
+
+			<p:outputLabel value="Nombre:" for="txtNomTipPro" />
+			<p:inputText id="txtNomTipPro" required="true" maxlength="45" />
+
+			<p:outputLabel value="Descripción:" for="txtDesTipPro" />
+			<p:inputTextarea id="txtDesTipPro" required="true" maxlength="200"
+				rows="4" cols="100" />
+
+		</p:panelGrid>
+
+		<br />
+
+		<!-- Tabla donde se va a mostrar la información -->
+		<p:dataTable id="datTabTipPro"
+			emptyMessage="No existen tipos de productos registrados">
+
+			<f:facet name="header">
+				<p:outputLabel value="Lista de Tipo de Producto" />
+			</f:facet>
+			<p:column headerText="Nombre"></p:column>
+			<p:column headerText="Descripción"></p:column>
+
+		</p:dataTable>
+
+	</ui:define>
+
+</ui:composition>
