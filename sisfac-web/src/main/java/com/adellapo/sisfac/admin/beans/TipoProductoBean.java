@@ -10,6 +10,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.event.SelectEvent;
+
 import com.adellapo.sisfac.entidad.TipoProducto;
 import com.adellapo.sisfac.negocio.TipoProductoFacade;
 
@@ -77,6 +79,10 @@ public class TipoProductoBean {
 		this.listaTipoProducto = listaTipoProducto;
 	}
 
+	public void seleccionarRegistro(SelectEvent e) {
+		this.tipoProductoSel = (TipoProducto) e.getObject();
+	}
+
 	// oparaciones principales
 	public void guardar() {
 
@@ -84,23 +90,49 @@ public class TipoProductoBean {
 
 		try {
 
-			adminTipoProducto.guardar(tipoProducto);
+			if (tipoProducto.getTipproCodigo() != 0) {
+
+				adminTipoProducto.actualizar(tipoProducto);
+				mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
+				mensaje.setSummary("Registro actualizado exitosamente.");
+				FacesContext.getCurrentInstance().addMessage(null, mensaje);
+
+			} else {
+
+				adminTipoProducto.guardar(tipoProducto);
+				mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
+				mensaje.setSummary("Registro guardado exitosamente.");
+				FacesContext.getCurrentInstance().addMessage(null, mensaje);
+
+			}
+
 			cargarTipoProductos();
-			mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
-			mensaje.setSummary("Registro guardado exitosamente.");
-			FacesContext.getCurrentInstance().addMessage(null, mensaje);
 			resetearFormulario();
 
 		} catch (Exception e) {
 
 			mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
 			mensaje.setSummary("No se ha podido guardar: " + e.getMessage());
+			FacesContext.getCurrentInstance().addMessage(null, mensaje);
 
 		}
 
 	}
 
 	public void editar() {
+
+		if (this.tipoProductoSel != null) {
+
+			this.tipoProducto = this.tipoProductoSel;
+
+		} else {
+
+			FacesMessage mensaje = new FacesMessage();
+			mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
+			mensaje.setSummary("Se debe seleccionar un tipo de producto");
+			FacesContext.getCurrentInstance().addMessage(null, mensaje);
+
+		}
 
 	}
 
@@ -109,7 +141,10 @@ public class TipoProductoBean {
 	}
 
 	public void resetearFormulario() {
+
 		this.tipoProducto = new TipoProducto();
+		this.tipoProductoSel = null;
+
 	}
 
 	private void cargarTipoProductos() {
@@ -130,6 +165,9 @@ public class TipoProductoBean {
 
 	@PostConstruct
 	public void inicializar() {
+
 		cargarTipoProductos();
+
 	}
+
 }
