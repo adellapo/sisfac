@@ -11,10 +11,12 @@
 
 		<!-- Barra de herramientas -->
 		<p:toolbar>
+
 			<f:facet name="right">
 
 				<p:commandButton value="Nuevo" icon="ui-icon-document"
-					actionListener="#{tipoProductoBean.resetearFormulario}" />
+					process="@this" actionListener="#{tipoProductoBean.nuevo()}"
+					update=":frmGen:menGen :frmGen:panGriTipPro" />
 
 				<p:commandButton value="Guardar" icon="ui-icon-disk"
 					process="@this :frmGen:panGriTipPro"
@@ -25,12 +27,15 @@
 					class="ui-icon ui-icon-grip-dotted-vertical" />
 				</span>
 
-				<p:commandButton value="Editar" icon="ui-icon-pencil" process="@this"
-					actionListener="#{tipoProductoBean.editar}" update=":frmGen:menGen :frmGen:panGriTipPro"/>
+				<p:commandButton value="Editar" icon="ui-icon-pencil"
+					process="@this" actionListener="#{tipoProductoBean.editar}"
+					update=":frmGen:menGen :frmGen:panGriTipPro" />
 
 				<p:commandButton value="Eliminar" icon="ui-icon-trash"
-					actionListener="#{tipoProductoBean.eliminar}" />
+					onclick="PF('diaConTipPro').show();" />
+
 			</f:facet>
+
 		</p:toolbar>
 
 		<!-- Panel para realizar el ingreso de la información -->
@@ -59,9 +64,10 @@
 			<f:facet name="header">
 				<p:outputLabel value="Lista de Tipo de Producto" />
 			</f:facet>
-			
-			<p:ajax event="rowSelect" listener="#{tipoProductoBean.seleccionarRegistro}"/>
-			
+
+			<p:ajax event="rowSelect"
+				listener="#{tipoProductoBean.seleccionarRegistro}" />
+
 			<p:column headerText="Nombre">
 				<p:outputLabel value="#{tipPro.tipproNombre}" />
 			</p:column>
@@ -71,6 +77,22 @@
 			</p:column>
 
 		</p:dataTable>
+
+		<!-- Dialogo para confirmar eliminacion -->
+		<p:dialog widgetVar="diaConTipPro"
+			header="Confirmación de la Eliminación">
+
+			<p:panelGrid columns="3">
+
+				<p:outputLabel value="Esta seguro que quiere eliminar el registro?" />
+				<p:commandButton value="Si" process="@this"
+					actionListener="#{tipoProductoBean.eliminar}"
+					update=":frmGen:menGen :frmGen:datTabTipPro"
+					oncomplete="PF('diaConTipPro').hide();" />
+				<p:commandButton value="No" onclick="PF('diaConTipPro').hide();" />
+			</p:panelGrid>
+
+		</p:dialog>
 
 	</ui:define>
 

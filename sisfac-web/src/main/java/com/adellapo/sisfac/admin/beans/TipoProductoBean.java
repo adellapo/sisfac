@@ -79,11 +79,12 @@ public class TipoProductoBean {
 		this.listaTipoProducto = listaTipoProducto;
 	}
 
+	// selector de registro
 	public void seleccionarRegistro(SelectEvent e) {
 		this.tipoProductoSel = (TipoProducto) e.getObject();
 	}
 
-	// oparaciones principales
+	// operaciones principales
 	public void guardar() {
 
 		FacesMessage mensaje = new FacesMessage();
@@ -137,6 +138,45 @@ public class TipoProductoBean {
 	}
 
 	public void eliminar() {
+
+		FacesMessage mensaje = new FacesMessage();
+
+		if (this.tipoProductoSel != null) {
+
+			this.tipoProducto = this.tipoProductoSel;
+			
+			try {
+				
+				adminTipoProducto.eliminar(tipoProductoSel);
+				mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
+				mensaje.setSummary("Tipo de producto eliminado");
+				
+			} catch (Exception e) {
+				
+				mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
+				mensaje.setSummary("Error al eliminar tipo de producto");
+			}
+			
+		} else {
+
+			mensaje.setSeverity(FacesMessage.SEVERITY_WARN);
+			mensaje.setSummary("Se debe seleccionar un tipo de producto");
+
+		}
+
+		FacesContext.getCurrentInstance().addMessage(null, mensaje);
+		cargarTipoProductos();
+		resetearFormulario();
+
+	}
+
+	public void nuevo() {
+
+		resetearFormulario();
+		FacesMessage message = new FacesMessage();
+		message.setSeverity(FacesMessage.SEVERITY_INFO);
+		message.setSummary("Nuevo registro de tipo de producto");
+		FacesContext.getCurrentInstance().addMessage(null, message);
 
 	}
 
