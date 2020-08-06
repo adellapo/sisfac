@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.event.SelectEvent;
 
+import com.adellapo.sisfac.core.AbstractManagedBean;
 import com.adellapo.sisfac.entidad.TipoProducto;
 import com.adellapo.sisfac.negocio.TipoProductoFacade;
 
@@ -23,7 +24,7 @@ import com.adellapo.sisfac.negocio.TipoProductoFacade;
  */
 @ManagedBean
 @ViewScoped
-public class TipoProductoBean {
+public class TipoProductoBean extends AbstractManagedBean {
 
 	private TipoProducto tipoProducto;
 	private TipoProducto tipoProductoSel;
@@ -87,23 +88,17 @@ public class TipoProductoBean {
 	// operaciones principales
 	public void guardar() {
 
-		FacesMessage mensaje = new FacesMessage();
-
 		try {
 
 			if (tipoProducto.getTipproCodigo() != 0) {
 
 				adminTipoProducto.actualizar(tipoProducto);
-				mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
-				mensaje.setSummary("Registro actualizado exitosamente.");
-				FacesContext.getCurrentInstance().addMessage(null, mensaje);
+				anadirMensajeInformacion("Registro actualizado exitosamente.");
 
 			} else {
 
 				adminTipoProducto.guardar(tipoProducto);
-				mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
-				mensaje.setSummary("Registro guardado exitosamente.");
-				FacesContext.getCurrentInstance().addMessage(null, mensaje);
+				anadirMensajeInformacion("Registro guardado exitosamente.");
 
 			}
 
@@ -112,9 +107,7 @@ public class TipoProductoBean {
 
 		} catch (Exception e) {
 
-			mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
-			mensaje.setSummary("No se ha podido guardar: " + e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, mensaje);
+			anadirMensajeError("No se ha podido guardar: " + e.getMessage());
 
 		}
 
@@ -128,10 +121,7 @@ public class TipoProductoBean {
 
 		} else {
 
-			FacesMessage mensaje = new FacesMessage();
-			mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
-			mensaje.setSummary("Se debe seleccionar un tipo de producto");
-			FacesContext.getCurrentInstance().addMessage(null, mensaje);
+			anadirMensajeAdvertencia("Se debe seleccionar un tipo de producto");
 
 		}
 
@@ -139,32 +129,27 @@ public class TipoProductoBean {
 
 	public void eliminar() {
 
-		FacesMessage mensaje = new FacesMessage();
-
 		if (this.tipoProductoSel != null) {
 
 			this.tipoProducto = this.tipoProductoSel;
-			
+
 			try {
-				
+
 				adminTipoProducto.eliminar(tipoProductoSel);
-				mensaje.setSeverity(FacesMessage.SEVERITY_INFO);
-				mensaje.setSummary("Tipo de producto eliminado");
-				
+				anadirMensajeInformacion("Tipo de producto eliminado");
+
 			} catch (Exception e) {
-				
-				mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
-				mensaje.setSummary("Error al eliminar tipo de producto");
+
+				anadirMensajeError("Error al eliminar tipo de producto");
+
 			}
-			
+
 		} else {
 
-			mensaje.setSeverity(FacesMessage.SEVERITY_WARN);
-			mensaje.setSummary("Se debe seleccionar un tipo de producto");
+			anadirMensajeAdvertencia("Se debe seleccionar un tipo de producto");
 
 		}
 
-		FacesContext.getCurrentInstance().addMessage(null, mensaje);
 		cargarTipoProductos();
 		resetearFormulario();
 
@@ -173,10 +158,7 @@ public class TipoProductoBean {
 	public void nuevo() {
 
 		resetearFormulario();
-		FacesMessage message = new FacesMessage();
-		message.setSeverity(FacesMessage.SEVERITY_INFO);
-		message.setSummary("Nuevo registro de tipo de producto");
-		FacesContext.getCurrentInstance().addMessage(null, message);
+		anadirMensajeInformacion("Nuevo registro de tipo de producto");
 
 	}
 
@@ -195,9 +177,7 @@ public class TipoProductoBean {
 
 		} catch (Exception e) {
 
-			FacesMessage mensaje = new FacesMessage();
-			mensaje.setSeverity(FacesMessage.SEVERITY_ERROR);
-			mensaje.setSummary("No se ha podido cargar los tipos de productos: " + e.getMessage());
+			anadirMensajeError("No se ha podido cargar los tipos de productos: " + e.getMessage());
 
 		}
 
