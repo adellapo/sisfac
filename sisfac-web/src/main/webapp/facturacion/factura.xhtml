@@ -6,11 +6,14 @@
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="contenido">
-
+		
+		<!-- Mensaje de notificación -->
 		<p:growl id="menGen"/>
 		
+		<!-- Visor por Tabs -->
 		<p:tabView id="tabVieGen">
 
+			<!-- Primera Tab ==> para generar una factura -->
 			<p:tab title="Generar Factura">
 
 				<p:toolbar>
@@ -36,7 +39,8 @@
 				</p:toolbar>
 
 				<br />
-
+				
+				<!-- Panel Administrar Facturas -->
 				<p:panelGrid id="panGriCabFac" columns="4" style="width:100%;">
 
 					<p:outputLabel value="Número:" for="txtNumFac" />
@@ -63,7 +67,8 @@
 				</p:panelGrid>
 
 				<br />
-
+				
+				<!-- Panel para Agregar/Eliminar Detalle Factura -->
 				<p:toolbar>
 
 					<f:facet name="right">
@@ -75,7 +80,10 @@
 					</f:facet>
 
 				</p:toolbar>
-
+				
+				<br />
+				
+				<!-- Tabla Detalle Factura -->
 				<p:dataTable id="datTabDetFac" value="#{facturaBean.listaDetalles}" var="detFac">
 
 					<p:column headerText="Producto">
@@ -102,8 +110,10 @@
 
 			</p:tab>
 
+			<!-- Segunda Tab ==> para ver las facturas -->
 			<p:tab title="Listar Factura">
 
+				<!-- Panel de Busqueda -->
 				<p:panelGrid id="panGriBusFac" columns="4" style="width:100%;">
 
 					<p:outputLabel value="Buscar Por:" />
@@ -118,6 +128,7 @@
 
 				<br />
 
+				<!-- Tabla Facturas -->
 				<p:dataTable id="datTabFac" value="#{facturaBean.listaFacturas}" var="fac">
 
 					<p:column headerText="Número">
@@ -125,7 +136,9 @@
 					</p:column>
 
 					<p:column headerText="Fecha">
-						<p:outputLabel value="#{fac.facFecha}"/>
+						<p:outputLabel value="#{fac.facFecha}">
+							<f:convertDateTime pattern="yyyy-MM-dd"/>
+						</p:outputLabel>
 					</p:column>
 
 					<p:column headerText="Cliente">
@@ -156,6 +169,7 @@
 
 		</p:tabView>
 	
+		<!-- Dialog de confirmación invocado por JS ==> PF('diaConFac') -->
 		<p:dialog widgetVar="diaConFac">
 	
 			<p:panelGrid columns="3">

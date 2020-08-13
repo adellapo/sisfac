@@ -4,22 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.event.SelectEvent;
 
+import com.adellapo.sisfac.core.AbstractManagedBean;
 import com.adellapo.sisfac.entidad.DetalleFactura;
 import com.adellapo.sisfac.entidad.Factura;
+import com.adellapo.sisfac.negocio.FacturaFacade;
 
 @ManagedBean
 @ViewScoped
-public class FacturaBean {
+public class FacturaBean extends AbstractManagedBean{
 
 	private Factura factura;
 	private Factura facturaSel;
 	private List<Factura> listaFacturas;
 	private List<DetalleFactura> listaDetalles;
+
+	@EJB
+	private FacturaFacade adminFactura;
 
 	public FacturaBean() {
 
@@ -87,26 +93,56 @@ public class FacturaBean {
 		this.listaDetalles = listaDetalles;
 	}
 
-	
 	// operaciones del formulario
-	
-	public void nuevo() {}
-	public void guardar() {}
-	public void editar() {}
-	public void eliminar() {}
-	public void anadirDetalle() {}
-	public void eliminarDetalle() {}
-	
+
+	public void nuevo() {
+	}
+
+	public void guardar() {
+	}
+
+	public void editar() {
+	}
+
+	public void eliminar() {
+	}
+
+	public void anadirDetalle() {
+	}
+
+	public void eliminarDetalle() {
+	}
+
 	// otras operaciones
-	
-	public void seleccionarFactura(SelectEvent se) {}
-	public void seleccionarDetalle(SelectEvent se) {}
-	public void resetearFormulario() {}
-	public void cargarFacturas() {}
-	
+
+	public void seleccionarFactura(SelectEvent se) {
+	}
+
+	public void seleccionarDetalle(SelectEvent se) {
+	}
+
+	public void resetearFormulario() {
+	}
+
+	public void cargarFacturas() {
+
+		try {
+
+			this.listaFacturas = adminFactura.consultarTodos();
+
+		} catch (Exception e) {
+			
+			anadirMensajeError("No se ha podido cargar las facturas: " + e.getMessage());
+
+		}
+
+	}
+
 	@PostConstruct
 	public void inicializar() {
-		
+
+		cargarFacturas();
+
 	}
 
 }

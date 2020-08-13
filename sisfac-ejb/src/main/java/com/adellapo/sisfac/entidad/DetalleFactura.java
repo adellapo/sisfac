@@ -4,42 +4,41 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-
 /**
  * The persistent class for the detalle_factura database table.
  * 
  */
 @Entity
-@Table(name="detalle_factura")
-@NamedQuery(name="DetalleFactura.findAll", query="SELECT d FROM DetalleFactura d")
+@Table(name = "detalle_factura")
+@NamedQuery(name = "DetalleFactura.findAll", query = "SELECT d FROM DetalleFactura d")
 public class DetalleFactura implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="detfac_codigo")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "detfac_codigo")
 	private int detfacCodigo;
 
-	@Column(name="detfac_cantidad")
+	@Column(name = "detfac_cantidad")
 	private int detfacCantidad;
 
-	@Column(name="detfac_observacion")
+	@Column(name = "detfac_observacion")
 	private String detfacObservacion;
 
-	@Column(name="detfac_precio")
+	@Column(name = "detfac_precio")
 	private BigDecimal detfacPrecio;
 
-	@Column(name="detfac_total")
+	@Column(name = "detfac_total")
 	private BigDecimal detfacTotal;
 
-	//bi-directional many-to-one association to Factura
+	// bi-directional many-to-one association to Factura
 	@ManyToOne
-	@JoinColumn(name="fac_codigo")
+	@JoinColumn(name = "fac_codigo")
 	private Factura factura;
 
-	//bi-directional many-to-one association to Producto
+	// bi-directional many-to-one association to Producto
 	@ManyToOne
-	@JoinColumn(name="pro_codigo")
+	@JoinColumn(name = "pro_codigo")
 	private Producto producto;
 
 	public DetalleFactura() {
@@ -99,6 +98,11 @@ public class DetalleFactura implements Serializable {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+
+	@Override
+	public String toString() {
+		return detfacCodigo + " - " + detfacObservacion;
 	}
 
 }
