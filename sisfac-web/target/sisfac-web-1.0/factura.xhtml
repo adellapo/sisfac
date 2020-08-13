@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="contenido">
+
+		<p:tabView>
+
+			<p:tab title="Generar Factura">
+
+				<p:toolbar>
+
+					<f:facet name="right">
+
+						<p:commandButton value="Nuevo" icon="ui-icon-document" />
+
+						<p:commandButton value="Guardar" icon="ui-icon-disk" />
+
+						<p:commandButton value="Editar" icon="ui-icon-pencil" />
+
+						<p:commandButton value="Eliminar" icon="ui-icon-trash" />
+
+					</f:facet>
+
+					<f:facet name="left">
+
+						<p:outputLabel value="Administración de Facturas" />
+
+					</f:facet>
+
+				</p:toolbar>
+
+				<br />
+
+				<p:panelGrid id="panGriCabFac" columns="4">
+
+					<p:outputLabel value="Número:" for="txtNumFac" />
+					<p:inputText id="txtNumFac" maxlength="16" />
+
+					<p:outputLabel value="Fecha:" for="calFecFac" />
+					<p:calendar id="calFecFac" />
+
+					<p:outputLabel value="Cliente:" />
+					<h:panelGroup>
+						<p:inputText maxlength="10" />
+						<p:commandButton icon="ui-icon-search" />
+					</h:panelGroup>
+
+					<p:outputLabel value="Subtotal:" for="spiSubFac" />
+					<p:spinner id="spiSubFac" />
+
+					<p:outputLabel value="Impuesto" for="" />
+					<p:spinner id="spiImpFac" />
+
+					<p:outputLabel value="Total:" for="" />
+					<p:spinner id="spiTotFac" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:toolbar>
+
+					<f:facet name="right">
+
+						<p:commandButton value="Añadir" icon="ui-icon-plus" />
+
+						<p:commandButton value="Eliminar" icon="ui-icon-minus" />
+
+					</f:facet>
+
+				</p:toolbar>
+
+				<p:dataTable id="datTabDetFac">
+
+					<p:column headerText="Producto"></p:column>
+
+					<p:column headerText="Observación"></p:column>
+
+					<p:column headerText="Cantidad"></p:column>
+
+					<p:column headerText="Precio"></p:column>
+
+					<p:column headerText="Total"></p:column>
+
+				</p:dataTable>
+
+				<p:dialog widgetVar="diaConFac">
+
+					<p:panelGrid columns="3">
+
+						<p:outputLabel value="Desea eliminar el registro?" />
+
+						<p:commandButton value="Si" oncomplete="PF('diaConFac').hide();" />
+
+						<p:commandButton value="No" onclick="PF('diaConFac').hide();" />
+
+					</p:panelGrid>
+
+				</p:dialog>
+
+			</p:tab>
+
+			<p:tab title="Listar Factura">
+
+				<p:panelGrid id="panGriBusFac" columns="3">
+
+					<p:outputLabel value="Buscar Por:" />
+
+					<p:selectOneMenu id="cmbBusPor"></p:selectOneMenu>
+
+					<p:inputText />
+
+					<p:commandButton icon="ui-icon-search" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:dataTable id="datTabFac">
+
+					<p:column headerText="Número"></p:column>
+
+					<p:column headerText="Fecha"></p:column>
+
+					<p:column headerText="Cliente"></p:column>
+
+					<p:column headerText="Subtotal"></p:column>
+
+					<p:column headerText="Impuesto"></p:column>
+
+					<p:column headerText="Total"></p:column>
+
+					<p:column headerText="Detalles"></p:column>
+
+				</p:dataTable>
+
+			</p:tab>
+
+		</p:tabView>
+
+	</ui:define>
+
+</ui:composition>

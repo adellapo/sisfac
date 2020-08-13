@@ -98,11 +98,13 @@ public class ProductoBean extends AbstractManagedBean {
 
 	public void nuevo() {
 
-		if (this.productoSel != null) {
+		this.productoSel = null;
 
-			this.productoSel = null;
+		anadirMensajeInformacion("Ingrese un nuevo Producto");
 
-		}
+		cargarProductos();
+
+		resetearFormulario();
 
 	}
 

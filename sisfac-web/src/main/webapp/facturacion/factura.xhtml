@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="contenido">
+
+		<p:growl id="menGen"/>
+		
+		<p:tabView id="tabVieGen">
+
+			<p:tab title="Generar Factura">
+
+				<p:toolbar>
+
+					<f:facet name="right">
+
+						<p:commandButton value="Nuevo" icon="ui-icon-document" process="@this" actionListener="#{facturaBean.nuevo()}" update="@form" />
+
+						<p:commandButton value="Guardar" icon="ui-icon-disk" process="@this :frmGen:tabVieGen:panGriCabFac" actionListener="#{facturaBean.guardar()}" update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac :frmGen:tabVieGen:datTabFac" />
+
+						<p:commandButton value="Editar" icon="ui-icon-pencil" process="@this" actionListener="#{facturaBean.editar()}" update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac"/>
+
+						<p:commandButton value="Eliminar" icon="ui-icon-trash" onclick="PF('diaConFac').show();"/>
+
+					</f:facet>
+
+					<f:facet name="left">
+
+						<p:outputLabel value="Administración de Facturas" />
+
+					</f:facet>
+
+				</p:toolbar>
+
+				<br />
+
+				<p:panelGrid id="panGriCabFac" columns="4" style="width:100%;">
+
+					<p:outputLabel value="Número:" for="txtNumFac" />
+					<p:inputText id="txtNumFac" maxlength="16" value="#{facturaBean.factura.facNumero}"/>
+
+					<p:outputLabel value="Fecha:" for="calFecFac" />
+					<p:calendar id="calFecFac" value="#{facturaBean.factura.facFecha}" />
+
+					<p:outputLabel value="Cliente:" />
+					<h:panelGroup>
+						<p:inputText maxlength="13" />
+						<p:commandButton icon="ui-icon-search" />
+					</h:panelGroup>
+
+					<p:outputLabel value="Subtotal:" for="spiSubFac" />
+					<p:spinner id="spiSubFac" value="#{facturaBean.factura.facSubtotal}"/>
+
+					<p:outputLabel value="Impuesto" for="spiImpFac" />
+					<p:spinner id="spiImpFac" value="#{facturaBean.factura.facImpuesto}"/>
+
+					<p:outputLabel value="Total:" for="spiTotFac" />
+					<p:spinner id="spiTotFac" value="#{facturaBean.factura.facTotal}"/>
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:toolbar>
+
+					<f:facet name="right">
+
+						<p:commandButton value="Añadir" icon="ui-icon-plus" />
+
+						<p:commandButton value="Eliminar" icon="ui-icon-minus" />
+
+					</f:facet>
+
+				</p:toolbar>
+
+				<p:dataTable id="datTabDetFac" value="#{facturaBean.listaDetalles}" var="detFac">
+
+					<p:column headerText="Producto">
+						<p:outputLabel value="#{detFac.producto.proNombre}" />
+					</p:column>
+
+					<p:column headerText="Observación">
+						<p:outputLabel value="#{detFac.detfacObservacion}" />
+					</p:column>
+
+					<p:column headerText="Cantidad">
+						<p:outputLabel value="#{detFac.detfacCantidad}" />
+					</p:column>
+
+					<p:column headerText="Precio">
+						<p:outputLabel value="#{detFac.detfacPrecio}" />
+					</p:column>
+
+					<p:column headerText="Total">
+						<p:outputLabel value="#{detFac.detfacTotal}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:tab>
+
+			<p:tab title="Listar Factura">
+
+				<p:panelGrid id="panGriBusFac" columns="4" style="width:100%;">
+
+					<p:outputLabel value="Buscar Por:" />
+
+					<p:selectOneMenu id="cmbBusPor"></p:selectOneMenu>
+
+					<p:inputText />
+
+					<p:commandButton icon="ui-icon-search" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:dataTable id="datTabFac" value="#{facturaBean.listaFacturas}" var="fac">
+
+					<p:column headerText="Número">
+						<p:outputLabel value="#{fac.facNumero}"/>
+					</p:column>
+
+					<p:column headerText="Fecha">
+						<p:outputLabel value="#{fac.facFecha}"/>
+					</p:column>
+
+					<p:column headerText="Cliente">
+						<p:outputLabel value="#{fac.cliente.cliNombres} #{fac.cliente.cliApellidos}"/>
+					</p:column>
+
+					<p:column headerText="Subtotal">
+						<p:outputLabel value="#{fac.facSubtotal}"/>
+					</p:column>
+
+					<p:column headerText="Impuesto">
+						<p:outputLabel value="#{fac.facImpuesto}"/>
+					</p:column>
+
+					<p:column headerText="Total">
+						<p:outputLabel value="#{fac.facTotal}"/>
+					</p:column>
+
+					<p:column headerText="Detalles">
+						<p:dataList value="#{fac.detalleFacturas}" var="detFacLis">
+							<p:outputLabel value="#{detFacLis}" />
+						</p:dataList>
+					</p:column>
+
+				</p:dataTable>
+
+			</p:tab>
+
+		</p:tabView>
+	
+		<p:dialog widgetVar="diaConFac">
+	
+			<p:panelGrid columns="3">
+	
+				<p:outputLabel value="Desea eliminar el registro?" />
+	
+				<p:commandButton value="Si" process="@this" actionListener="#{facturaBean.eliminar()}" update=":frmGen:menGen :frmGen:tabVieGen:datTabFac" oncomplete="PF('diaConFac').hide();" />
+	
+				<p:commandButton value="No" onclick="PF('diaConFac').hide();" />
+	
+			</p:panelGrid>
+	
+		</p:dialog>
+				
+	</ui:define>
+
+</ui:composition>
