@@ -11,21 +11,27 @@ import javax.faces.bean.ViewScoped;
 import org.primefaces.event.SelectEvent;
 
 import com.adellapo.sisfac.core.AbstractManagedBean;
+import com.adellapo.sisfac.entidad.Cliente;
 import com.adellapo.sisfac.entidad.DetalleFactura;
 import com.adellapo.sisfac.entidad.Factura;
+import com.adellapo.sisfac.negocio.ClienteFacade;
 import com.adellapo.sisfac.negocio.FacturaFacade;
 
 @ManagedBean
 @ViewScoped
-public class FacturaBean extends AbstractManagedBean{
+public class FacturaBean extends AbstractManagedBean {
 
 	private Factura factura;
 	private Factura facturaSel;
 	private List<Factura> listaFacturas;
 	private List<DetalleFactura> listaDetalles;
+	private Cliente cliente;
 
 	@EJB
 	private FacturaFacade adminFactura;
+
+	@EJB
+	private ClienteFacade adminCliente;
 
 	public FacturaBean() {
 
@@ -34,6 +40,8 @@ public class FacturaBean extends AbstractManagedBean{
 		this.listaFacturas = new ArrayList<Factura>();
 
 		this.listaDetalles = new ArrayList<DetalleFactura>();
+
+		this.cliente = new Cliente();
 
 	}
 
@@ -93,6 +101,20 @@ public class FacturaBean extends AbstractManagedBean{
 		this.listaDetalles = listaDetalles;
 	}
 
+	/**
+	 * @return the cliente
+	 */
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	/**
+	 * @param cliente the cliente to set
+	 */
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
 	// operaciones del formulario
 
 	public void nuevo() {
@@ -115,6 +137,31 @@ public class FacturaBean extends AbstractManagedBean{
 
 	// otras operaciones
 
+	public void buscarCliente() {
+
+		try {
+
+			cliente = adminCliente.buscarClientePorIdentificacion(cliente.getCliIdentificacion());
+			
+			if (cliente == null) {
+
+				anadirMensajeAdvertencia("Cliente no encontrado");
+
+				cliente = new Cliente();
+
+			}else {
+				
+				anadirMensajeInformacion("Cliente encontrado");
+				
+			}
+
+		} catch (Exception e) {
+
+			anadirMensajeError("Error al buscar el cliente :" + e.getMessage());
+		}
+
+	}
+
 	public void seleccionarFactura(SelectEvent se) {
 	}
 
@@ -131,7 +178,7 @@ public class FacturaBean extends AbstractManagedBean{
 			this.listaFacturas = adminFactura.consultarTodos();
 
 		} catch (Exception e) {
-			
+
 			anadirMensajeError("No se ha podido cargar las facturas: " + e.getMessage());
 
 		}

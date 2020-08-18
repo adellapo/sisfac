@@ -49,12 +49,27 @@
 					<p:outputLabel value="Fecha:" for="calFecFac" />
 					<p:calendar id="calFecFac" value="#{facturaBean.factura.facFecha}" />
 
-					<p:outputLabel value="Cliente:" />
+					<p:outputLabel for="txtIdeCli" value="Identificación Cliente:" />
 					<h:panelGroup>
-						<p:inputText maxlength="13" />
-						<p:commandButton icon="ui-icon-search" />
+						<p:inputText id="txtIdeCli" maxlength="13" required="true" value="#{facturaBean.cliente.cliIdentificacion}"/>
+						<p:commandButton icon="ui-icon-search" 
+						process="@this :frmGen:tabVieGen:txtIdeCli" 
+						actionListener="#{facturaBean.buscarCliente()}" 
+						update=":frmGen:tabVieGen:txtNomCli 
+								:frmGen:tabVieGen:txaDirCli 
+								:frmGen:tabVieGen:txtTelCli 
+								:frmGen:menGen"/>
 					</h:panelGroup>
 
+					<p:outputLabel value="Nombres:" />
+					<p:inputText id="txtNomCli" readonly="true" value="#{facturaBean.cliente.cliNombres} #{facturaBean.cliente.cliApellidos}" />
+
+					<p:outputLabel value="Dirección:" />
+					<p:inputTextarea id="txaDirCli" readonly="true" value="#{facturaBean.cliente.cliDireccion}" />
+
+					<p:outputLabel value="Teléfono:" />
+					<p:inputText id="txtTelCli" readonly="true" value="#{facturaBean.cliente.cliTelefono}" />
+					
 					<p:outputLabel value="Subtotal:" for="spiSubFac" />
 					<p:spinner id="spiSubFac" value="#{facturaBean.factura.facSubtotal}"/>
 
