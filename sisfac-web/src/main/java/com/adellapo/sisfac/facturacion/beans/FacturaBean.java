@@ -1,7 +1,10 @@
 package com.adellapo.sisfac.facturacion.beans;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -14,8 +17,10 @@ import com.adellapo.sisfac.core.AbstractManagedBean;
 import com.adellapo.sisfac.entidad.Cliente;
 import com.adellapo.sisfac.entidad.DetalleFactura;
 import com.adellapo.sisfac.entidad.Factura;
+import com.adellapo.sisfac.entidad.Producto;
 import com.adellapo.sisfac.negocio.ClienteFacade;
 import com.adellapo.sisfac.negocio.FacturaFacade;
+import com.adellapo.sisfac.negocio.ProductoFacade;
 
 @ManagedBean
 @ViewScoped
@@ -26,12 +31,17 @@ public class FacturaBean extends AbstractManagedBean {
 	private List<Factura> listaFacturas;
 	private List<DetalleFactura> listaDetalles;
 	private Cliente cliente;
+	private DetalleFactura detalle;
+	private Producto producto;
 
 	@EJB
 	private FacturaFacade adminFactura;
 
 	@EJB
 	private ClienteFacade adminCliente;
+
+	@EJB
+	private ProductoFacade adminProducto;
 
 	public FacturaBean() {
 
@@ -42,6 +52,10 @@ public class FacturaBean extends AbstractManagedBean {
 		this.listaDetalles = new ArrayList<DetalleFactura>();
 
 		this.cliente = new Cliente();
+
+		this.detalle = new DetalleFactura();
+
+		this.producto = new Producto();
 
 	}
 
@@ -115,6 +129,34 @@ public class FacturaBean extends AbstractManagedBean {
 		this.cliente = cliente;
 	}
 
+	/**
+	 * @return the detalle
+	 */
+	public DetalleFactura getDetalle() {
+		return detalle;
+	}
+
+	/**
+	 * @param detalle the detalle to set
+	 */
+	public void setDetalle(DetalleFactura detalle) {
+		this.detalle = detalle;
+	}
+
+	/**
+	 * @return the producto
+	 */
+	public Producto getProducto() {
+		return producto;
+	}
+
+	/**
+	 * @param producto the producto to set
+	 */
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
+
 	// operaciones del formulario
 
 	public void nuevo() {
@@ -130,9 +172,116 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	public void anadirDetalle() {
+
+		boolean agregarDet = true;
+
+		detalle.setFactura(factura);
+
+		detalle.setProducto(producto);
+
+		if (listaDetalles.isEmpty()) {
+
+			listaDetalles.add(detalle);
+
+			anadirMensajeInformacion("Lista vacia. Producto añadido");
+
+		} else {
+
+			Iterator<DetalleFactura> it = listaDetalles.iterator();
+
+			while (it.hasNext()) {
+
+				Producto p = it.next().getProducto();
+
+				if (p.getProNombre().equals(producto.getProNombre())) {
+
+					agregarDet = false;
+
+					break;
+
+				}
+
+			}
+
+			if (agregarDet == true) {
+
+				listaDetalles.add(detalle);
+
+				anadirMensajeInformacion("Producto añadido");
+
+			} else {
+
+				anadirMensajeAdvertencia("El Producto ya se encuentra en la lista.");
+
+			}
+
+		}
+
+		cancelarDetalle();
+
 	}
 
 	public void eliminarDetalle() {
+	}
+
+	public void cancelarDetalle() {
+
+		this.detalle = null;
+
+		this.producto = null;
+
+		this.detalle = new DetalleFactura();
+
+		this.producto = new Producto();
+
+	}
+
+	// inputText Nombre del Producto con autoComplete
+	public List<Producto> completarProductos(String query) {
+
+		try {
+
+			String queryLowerCase = query.toLowerCase();
+
+			List<Producto> proTmp = adminProducto.consultarTodos();
+
+			return proTmp.stream().filter(t -> t.getProNombre().toLowerCase().startsWith(queryLowerCase))
+					.collect(Collectors.toList());
+
+		} catch (Exception e) {
+
+			anadirMensajeError("No encontrado: " + e.getMessage());
+
+			return null;
+
+		}
+
+	}
+
+	// inputText Precio Producto
+	public void actualizarPrecioProducto() {
+
+		if (producto != null) {
+
+			this.detalle.setDetfacPrecio(producto.getProPrecio());
+
+		}
+
+	}
+
+	// inputText Total Detalle
+	public void calcularTotalDetalle() {
+
+		if (detalle != null) {
+
+			BigDecimal totalDetalle = new BigDecimal(0.0);
+
+			totalDetalle = detalle.getDetfacPrecio().multiply(new BigDecimal(detalle.getDetfacCantidad()));
+
+			this.detalle.setDetfacTotal(totalDetalle);
+
+		}
+
 	}
 
 	// otras operaciones
@@ -142,17 +291,17 @@ public class FacturaBean extends AbstractManagedBean {
 		try {
 
 			cliente = adminCliente.buscarClientePorIdentificacion(cliente.getCliIdentificacion());
-			
+
 			if (cliente == null) {
 
 				anadirMensajeAdvertencia("Cliente no encontrado");
 
 				cliente = new Cliente();
 
-			}else {
-				
+			} else {
+
 				anadirMensajeInformacion("Cliente encontrado");
-				
+
 			}
 
 		} catch (Exception e) {

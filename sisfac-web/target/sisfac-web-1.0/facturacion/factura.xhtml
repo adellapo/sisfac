@@ -88,7 +88,7 @@
 
 					<f:facet name="right">
 
-						<p:commandButton value="Añadir" icon="ui-icon-plus" />
+						<p:commandButton value="Añadir" icon="ui-icon-plus" onclick="PF('diaAnaDetFac').show();" />
 
 						<p:commandButton value="Eliminar" icon="ui-icon-minus" />
 
@@ -197,6 +197,60 @@
 	
 			</p:panelGrid>
 	
+		</p:dialog>
+		
+		<p:dialog widgetVar="diaAnaDetFac" header="Añadir Detalle">
+			
+			<p:toolbar>
+				<f:facet name="right">
+					<p:commandButton value="Guardar" 
+					process="@this :frmGen:panGriAnaDetFac" 
+					actionListener="#{facturaBean.anadirDetalle()}" 
+					update=":frmGen:panGriAnaDetFac :frmGen:tabVieGen:datTabDetFac :frmGen:menGen" 
+					oncomplete="PF('diaAnaDetFac').hide();" />
+					
+					<p:commandButton value="Cancelar" 
+					process="@this"
+					actionListener="#{facturaBean.cancelarDetalle()}"
+					update=":frmGen:panGriAnaDetFac"
+					oncomplete="PF('diaAnaDetFac').hide();" />
+					
+				</f:facet>
+			</p:toolbar>
+			
+			<br/>
+			
+			<p:panelGrid id="panGriAnaDetFac" columns="2">
+			
+				<p:outputLabel value="Producto:" for="atxtProDetFac" />
+				<p:autoComplete id="atxtProDetFac" required="true" value="#{facturaBean.producto}" 
+				completeMethod="#{facturaBean.completarProductos}" var="pro" 
+				itemLabel="#{pro.proNombre}" itemValue="#{pro}"
+				converter="#{convPro}"
+				>
+					<p:ajax event="blur" process="@this :frmGen:spiPreDetFac" listener="#{facturaBean.actualizarPrecioProducto()}" update=":frmGen:spiPreDetFac" />
+				</p:autoComplete>
+				
+				<p:outputLabel value="Observación:" for="txaObsDetFac" />
+				<p:inputTextarea id="txaObsDetFac" rows="5" cols="30" maxlength="200" 
+				value="#{facturaBean.detalle.detfacObservacion}" />
+
+				<p:outputLabel value="Precio:" for="spiPreDetFac" />
+				<p:spinner id="spiPreDetFac" readonly="true" 
+				value="#{facturaBean.detalle.detfacPrecio}"/>
+
+				<p:outputLabel value="Cantidad:" for="spiCanDetFac" />
+				<p:spinner id="spiCanDetFac" required="true"
+				value="#{facturaBean.detalle.detfacCantidad}" >				
+					<p:ajax event="blur" process="@this :frmGen:spiTotDetFac" listener="#{facturaBean.calcularTotalDetalle()}" update=":frmGen:spiTotDetFac" />
+				</p:spinner>
+				
+				<p:outputLabel value="Total:" for="spiTotDetFac" />
+				<p:spinner id="spiTotDetFac" readonly="true"
+				value="#{facturaBean.detalle.detfacTotal}" />
+	
+			</p:panelGrid>
+		
 		</p:dialog>
 				
 	</ui:define>

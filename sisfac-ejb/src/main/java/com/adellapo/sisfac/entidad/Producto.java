@@ -104,4 +104,33 @@ public class Producto implements Serializable {
 		this.tipoProducto = tipoProducto;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + proCodigo;
+		result = prime * result + ((proNombre == null) ? 0 : proNombre.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Producto other = (Producto) obj;
+		if (proCodigo != other.proCodigo)
+			return false;
+		if (proNombre == null) {
+			if (other.proNombre != null)
+				return false;
+		} else if (!proNombre.equals(other.proNombre))
+			return false;
+		return true;
+	}
+
+	
 }
