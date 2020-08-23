@@ -32,7 +32,10 @@ public class FacturaBean extends AbstractManagedBean {
 	private List<DetalleFactura> listaDetalles;
 	private Cliente cliente;
 	private DetalleFactura detalle;
+	private DetalleFactura detalleSel;
 	private Producto producto;
+
+	private int codTmpFac;
 
 	@EJB
 	private FacturaFacade adminFactura;
@@ -157,6 +160,20 @@ public class FacturaBean extends AbstractManagedBean {
 		this.producto = producto;
 	}
 
+	/**
+	 * @return the detalleSel
+	 */
+	public DetalleFactura getDetalleSel() {
+		return detalleSel;
+	}
+
+	/**
+	 * @param detalleSel the detalleSel to set
+	 */
+	public void setDetalleSel(DetalleFactura detalleSel) {
+		this.detalleSel = detalleSel;
+	}
+
 	// operaciones del formulario
 
 	public void nuevo() {
@@ -173,55 +190,82 @@ public class FacturaBean extends AbstractManagedBean {
 
 	public void anadirDetalle() {
 
-		boolean agregarDet = true;
+//		boolean agregarDet = true;
 
 		detalle.setFactura(factura);
 
 		detalle.setProducto(producto);
 
-		if (listaDetalles.isEmpty()) {
+		detalle.setDetfacCodigoTmp(++codTmpFac);
+
+		if (listaDetalles.isEmpty() || !listaDetalles.contains(detalle)) {
 
 			listaDetalles.add(detalle);
 
-			anadirMensajeInformacion("Lista vacia. Producto añadido");
+			anadirMensajeInformacion("Producto añadido");
 
 		} else {
 
-			Iterator<DetalleFactura> it = listaDetalles.iterator();
-
-			while (it.hasNext()) {
-
-				Producto p = it.next().getProducto();
-
-				if (p.getProNombre().equals(producto.getProNombre())) {
-
-					agregarDet = false;
-
-					break;
-
-				}
-
-			}
-
-			if (agregarDet == true) {
-
-				listaDetalles.add(detalle);
-
-				anadirMensajeInformacion("Producto añadido");
-
-			} else {
-
-				anadirMensajeAdvertencia("El Producto ya se encuentra en la lista.");
-
-			}
+			anadirMensajeAdvertencia("El Producto ya se encuentra en la lista");
 
 		}
+
+//		if (listaDetalles.isEmpty()) {
+//
+//			listaDetalles.add(detalle);
+//
+//			anadirMensajeInformacion("Lista vacia. Producto añadido");
+//
+//		} else {
+//
+//			Iterator<DetalleFactura> it = listaDetalles.iterator();
+//
+//			while (it.hasNext()) {
+//
+//				Producto p = it.next().getProducto();
+//
+//				if (p.getProNombre().equals(producto.getProNombre())) {
+//
+//					agregarDet = false;
+//
+//					break;
+//
+//				}
+//
+//			}
+//
+//			if (agregarDet == true) {
+//
+//				listaDetalles.add(detalle);
+//
+//				anadirMensajeInformacion("Producto añadido");
+//
+//			} else {
+//
+//				anadirMensajeAdvertencia("El Producto ya se encuentra en la lista.");
+//
+//			}
+//
+//		}
 
 		cancelarDetalle();
 
 	}
 
 	public void eliminarDetalle() {
+
+		if (this.detalleSel != null) {
+
+			this.listaDetalles.remove(this.detalleSel);
+
+			anadirMensajeInformacion("Detalle eliminado");
+
+		} else {
+
+			anadirMensajeError("Se debe seleccionar un Detalle");
+
+		}
+
 	}
 
 	public void cancelarDetalle() {
@@ -232,6 +276,8 @@ public class FacturaBean extends AbstractManagedBean {
 
 		this.detalle = new DetalleFactura();
 
+		this.detalleSel = null;
+		
 		this.producto = new Producto();
 
 	}
@@ -314,7 +360,10 @@ public class FacturaBean extends AbstractManagedBean {
 	public void seleccionarFactura(SelectEvent se) {
 	}
 
-	public void seleccionarDetalle(SelectEvent se) {
+	public void seleccionarDetalleFactura(SelectEvent se) {
+
+		this.detalleSel = (DetalleFactura) se.getObject();
+
 	}
 
 	public void resetearFormulario() {

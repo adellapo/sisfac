@@ -90,7 +90,7 @@
 
 						<p:commandButton value="Añadir" icon="ui-icon-plus" onclick="PF('diaAnaDetFac').show();" />
 
-						<p:commandButton value="Eliminar" icon="ui-icon-minus" />
+						<p:commandButton value="Eliminar" icon="ui-icon-minus" onclick="PF('diaConEliDetFac').show();"/>
 
 					</f:facet>
 
@@ -99,8 +99,10 @@
 				<br />
 				
 				<!-- Tabla Detalle Factura -->
-				<p:dataTable id="datTabDetFac" value="#{facturaBean.listaDetalles}" var="detFac">
+				<p:dataTable id="datTabDetFac" value="#{facturaBean.listaDetalles}" var="detFac" selectionMode="single" rowKey="#{detFac.detfacCodigoTmp}">
 
+					<p:ajax event="rowSelect" listener="#{facturaBean.seleccionarDetalleFactura}" />
+					
 					<p:column headerText="Producto">
 						<p:outputLabel value="#{detFac.producto.proNombre}" />
 					</p:column>
@@ -185,7 +187,7 @@
 		</p:tabView>
 	
 		<!-- Dialog de confirmación invocado por JS ==> PF('diaConFac') -->
-		<p:dialog widgetVar="diaConFac">
+		<p:dialog widgetVar="diaConFac" header="Confirmación Eliminación">
 	
 			<p:panelGrid columns="3">
 	
@@ -253,6 +255,20 @@
 		
 		</p:dialog>
 				
+		<p:dialog widgetVar="diaConEliDetFac" header="Confirmación Eliminación Detalle">
+	
+			<p:panelGrid columns="3">
+	
+				<p:outputLabel value="Desea eliminar el registro?" />
+	
+				<p:commandButton value="Si" process="@this" actionListener="#{facturaBean.eliminarDetalle()}" update=":frmGen:menGen :frmGen:tabVieGen:datTabDetFac" oncomplete="PF('diaConEliDetFac').hide();" />
+	
+				<p:commandButton value="No" onclick="PF('diaConEliDetFac').hide();" />
+	
+			</p:panelGrid>
+	
+		</p:dialog>
+
 	</ui:define>
 
 </ui:composition>

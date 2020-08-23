@@ -31,6 +31,9 @@ public class DetalleFactura implements Serializable {
 	@Column(name = "detfac_total")
 	private BigDecimal detfacTotal;
 
+	@Transient
+	private Integer detfacCodigoTmp;
+
 	// bi-directional many-to-one association to Factura
 	@ManyToOne
 	@JoinColumn(name = "fac_codigo")
@@ -100,9 +103,42 @@ public class DetalleFactura implements Serializable {
 		this.producto = producto;
 	}
 
+	public Integer getDetfacCodigoTmp() {
+		return detfacCodigoTmp;
+	}
+
+	public void setDetfacCodigoTmp(Integer detfacCodigoTmp) {
+		this.detfacCodigoTmp = detfacCodigoTmp;
+	}
+
 	@Override
 	public String toString() {
 		return detfacCodigo + " - " + detfacObservacion;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((producto == null) ? 0 : producto.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DetalleFactura other = (DetalleFactura) obj;
+		if (producto == null) {
+			if (other.producto != null)
+				return false;
+		} else if (!producto.equals(other.producto))
+			return false;
+		return true;
 	}
 
 }
