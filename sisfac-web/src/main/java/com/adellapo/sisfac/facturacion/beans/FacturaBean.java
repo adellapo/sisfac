@@ -29,10 +29,10 @@ public class FacturaBean extends AbstractManagedBean {
 	private Factura factura;
 	private Factura facturaSel;
 	private List<Factura> listaFacturas;
-	private List<DetalleFactura> listaDetalles;
+	private DetalleFactura detalleFactura;
+	private DetalleFactura detalleFacturaSel;
+	private List<DetalleFactura> listaDetallesFacturas;
 	private Cliente cliente;
-	private DetalleFactura detalle;
-	private DetalleFactura detalleSel;
 	private Producto producto;
 
 	private int codTmpFac;
@@ -52,11 +52,11 @@ public class FacturaBean extends AbstractManagedBean {
 
 		this.listaFacturas = new ArrayList<Factura>();
 
-		this.listaDetalles = new ArrayList<DetalleFactura>();
+		this.listaDetallesFacturas = new ArrayList<DetalleFactura>();
 
 		this.cliente = new Cliente();
 
-		this.detalle = new DetalleFactura();
+		this.detalleFactura = new DetalleFactura();
 
 		this.producto = new Producto();
 
@@ -105,17 +105,17 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	/**
-	 * @return the listaDetalles
+	 * @return the listaDetallesFacturas
 	 */
 	public List<DetalleFactura> getListaDetalles() {
-		return listaDetalles;
+		return listaDetallesFacturas;
 	}
 
 	/**
-	 * @param listaDetalles the listaDetalles to set
+	 * @param listaDetallesFacturas the listaDetallesFacturas to set
 	 */
 	public void setListaDetalles(List<DetalleFactura> listaDetalles) {
-		this.listaDetalles = listaDetalles;
+		this.listaDetallesFacturas = listaDetalles;
 	}
 
 	/**
@@ -133,17 +133,17 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	/**
-	 * @return the detalle
+	 * @return the detalleFactura
 	 */
 	public DetalleFactura getDetalle() {
-		return detalle;
+		return detalleFactura;
 	}
 
 	/**
-	 * @param detalle the detalle to set
+	 * @param detalleFactura the detalleFactura to set
 	 */
 	public void setDetalle(DetalleFactura detalle) {
-		this.detalle = detalle;
+		this.detalleFactura = detalle;
 	}
 
 	/**
@@ -161,17 +161,17 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	/**
-	 * @return the detalleSel
+	 * @return the detalleFacturaSel
 	 */
 	public DetalleFactura getDetalleSel() {
-		return detalleSel;
+		return detalleFacturaSel;
 	}
 
 	/**
-	 * @param detalleSel the detalleSel to set
+	 * @param detalleFacturaSel the detalleFacturaSel to set
 	 */
 	public void setDetalleSel(DetalleFactura detalleSel) {
-		this.detalleSel = detalleSel;
+		this.detalleFacturaSel = detalleSel;
 	}
 
 	// operaciones del formulario
@@ -180,6 +180,41 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	public void guardar() {
+
+		try {
+
+			if (cliente != null) {
+
+				if (!listaDetallesFacturas.isEmpty()) {
+
+					// 3 - CASCADE
+
+					factura.setCliente(cliente);
+
+					factura.setDetalleFacturas(listaDetallesFacturas);
+
+					adminFactura.guardar(factura);
+
+					anadirMensajeInformacion("Factura añadida");
+
+					cargarFacturas();
+
+					resetearFormulario();
+
+				}
+
+			} else {
+
+				anadirMensajeAdvertencia("Se debe ingresar un Cliente");
+
+			}
+
+		} catch (Exception e) {
+
+			anadirMensajeError("Error al guardar la Factura: " + e.getMessage());
+
+		}
+
 	}
 
 	public void editar() {
@@ -190,17 +225,19 @@ public class FacturaBean extends AbstractManagedBean {
 
 	public void anadirDetalle() {
 
-//		boolean agregarDet = true;
+		// 2 - CASCADE
 
-		detalle.setFactura(factura);
+		detalleFactura.setFactura(factura);
 
-		detalle.setProducto(producto);
+		detalleFactura.setProducto(producto);
 
-		detalle.setDetfacCodigoTmp(++codTmpFac);
+		detalleFactura.setDetfacCodigoTmp(++codTmpFac);
 
-		if (listaDetalles.isEmpty() || !listaDetalles.contains(detalle)) {
+		if (listaDetallesFacturas.isEmpty() || !listaDetallesFacturas.contains(detalleFactura)) {
 
-			listaDetalles.add(detalle);
+			listaDetallesFacturas.add(detalleFactura);
+
+			actualizarValoresFactura();
 
 			anadirMensajeInformacion("Producto añadido");
 
@@ -210,53 +247,17 @@ public class FacturaBean extends AbstractManagedBean {
 
 		}
 
-//		if (listaDetalles.isEmpty()) {
-//
-//			listaDetalles.add(detalle);
-//
-//			anadirMensajeInformacion("Lista vacia. Producto añadido");
-//
-//		} else {
-//
-//			Iterator<DetalleFactura> it = listaDetalles.iterator();
-//
-//			while (it.hasNext()) {
-//
-//				Producto p = it.next().getProducto();
-//
-//				if (p.getProNombre().equals(producto.getProNombre())) {
-//
-//					agregarDet = false;
-//
-//					break;
-//
-//				}
-//
-//			}
-//
-//			if (agregarDet == true) {
-//
-//				listaDetalles.add(detalle);
-//
-//				anadirMensajeInformacion("Producto añadido");
-//
-//			} else {
-//
-//				anadirMensajeAdvertencia("El Producto ya se encuentra en la lista.");
-//
-//			}
-//
-//		}
-
 		cancelarDetalle();
 
 	}
 
 	public void eliminarDetalle() {
 
-		if (this.detalleSel != null) {
+		if (this.detalleFacturaSel != null) {
 
-			this.listaDetalles.remove(this.detalleSel);
+			this.listaDetallesFacturas.remove(this.detalleFacturaSel);
+
+			actualizarValoresFactura();
 
 			anadirMensajeInformacion("Detalle eliminado");
 
@@ -270,14 +271,14 @@ public class FacturaBean extends AbstractManagedBean {
 
 	public void cancelarDetalle() {
 
-		this.detalle = null;
+		this.detalleFactura = null;
+
+		this.detalleFactura = new DetalleFactura();
+
+		this.detalleFacturaSel = null;
 
 		this.producto = null;
 
-		this.detalle = new DetalleFactura();
-
-		this.detalleSel = null;
-		
 		this.producto = new Producto();
 
 	}
@@ -309,7 +310,7 @@ public class FacturaBean extends AbstractManagedBean {
 
 		if (producto != null) {
 
-			this.detalle.setDetfacPrecio(producto.getProPrecio());
+			this.detalleFactura.setDetfacPrecio(producto.getProPrecio());
 
 		}
 
@@ -318,13 +319,14 @@ public class FacturaBean extends AbstractManagedBean {
 	// inputText Total Detalle
 	public void calcularTotalDetalle() {
 
-		if (detalle != null) {
+		if (detalleFactura != null) {
 
 			BigDecimal totalDetalle = new BigDecimal(0.0);
 
-			totalDetalle = detalle.getDetfacPrecio().multiply(new BigDecimal(detalle.getDetfacCantidad()));
+			totalDetalle = detalleFactura.getDetfacPrecio()
+					.multiply(new BigDecimal(detalleFactura.getDetfacCantidad()));
 
-			this.detalle.setDetfacTotal(totalDetalle);
+			this.detalleFactura.setDetfacTotal(totalDetalle);
 
 		}
 
@@ -362,11 +364,18 @@ public class FacturaBean extends AbstractManagedBean {
 
 	public void seleccionarDetalleFactura(SelectEvent se) {
 
-		this.detalleSel = (DetalleFactura) se.getObject();
+		this.detalleFacturaSel = (DetalleFactura) se.getObject();
 
 	}
 
 	public void resetearFormulario() {
+
+		this.factura = new Factura();
+
+		this.facturaSel = null;
+
+		this.listaDetallesFacturas.clear();
+
 	}
 
 	public void cargarFacturas() {
@@ -380,6 +389,25 @@ public class FacturaBean extends AbstractManagedBean {
 			anadirMensajeError("No se ha podido cargar las facturas: " + e.getMessage());
 
 		}
+
+	}
+
+	// agregada para calcular los valores subtotal, impuesto y total
+	private void actualizarValoresFactura() {
+
+		BigDecimal subtotal = new BigDecimal(0.0);
+
+		for (DetalleFactura df : listaDetallesFacturas) {
+
+			subtotal = subtotal.add(df.getDetfacTotal());
+
+		}
+
+		factura.setFacSubtotal(subtotal);
+
+		factura.setFacImpuesto(factura.getFacSubtotal().multiply(new BigDecimal(0.21)));
+
+		factura.setFacTotal(factura.getFacSubtotal().add(factura.getFacImpuesto()));
 
 	}
 

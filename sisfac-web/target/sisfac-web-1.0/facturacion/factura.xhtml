@@ -206,9 +206,9 @@
 			<p:toolbar>
 				<f:facet name="right">
 					<p:commandButton value="Guardar" 
-					process="@this :frmGen:panGriAnaDetFac" 
+					process="@this :frmGen:panGriAnaDetFac :frmGen:tabVieGen:spiSubFac :frmGen:tabVieGen:spiImpFac :frmGen:tabVieGen:spiTotFac" 
 					actionListener="#{facturaBean.anadirDetalle()}" 
-					update=":frmGen:panGriAnaDetFac :frmGen:tabVieGen:datTabDetFac :frmGen:menGen" 
+					update=":frmGen:menGen :frmGen:panGriAnaDetFac :frmGen:tabVieGen:datTabDetFac :frmGen:tabVieGen:spiSubFac :frmGen:tabVieGen:spiImpFac :frmGen:tabVieGen:spiTotFac" 
 					oncomplete="PF('diaAnaDetFac').hide();" />
 					
 					<p:commandButton value="Cancelar" 
@@ -261,7 +261,7 @@
 	
 				<p:outputLabel value="Desea eliminar el registro?" />
 	
-				<p:commandButton value="Si" process="@this" actionListener="#{facturaBean.eliminarDetalle()}" update=":frmGen:menGen :frmGen:tabVieGen:datTabDetFac" oncomplete="PF('diaConEliDetFac').hide();" />
+				<p:commandButton value="Si" process="@this :frmGen:tabVieGen:spiSubFac :frmGen:tabVieGen:spiImpFac :frmGen:tabVieGen:spiTotFac" actionListener="#{facturaBean.eliminarDetalle()}" update=":frmGen:menGen :frmGen:tabVieGen:datTabDetFac :frmGen:tabVieGen:spiSubFac :frmGen:tabVieGen:spiImpFac :frmGen:tabVieGen:spiTotFac" oncomplete="PF('diaConEliDetFac').hide();" />
 	
 				<p:commandButton value="No" onclick="PF('diaConEliDetFac').hide();" />
 	

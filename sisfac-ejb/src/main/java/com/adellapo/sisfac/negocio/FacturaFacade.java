@@ -1,9 +1,12 @@
 package com.adellapo.sisfac.negocio;
 
+import java.math.BigDecimal;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.adellapo.sisfac.entidad.DetalleFactura;
 import com.adellapo.sisfac.entidad.Factura;
 
 @Stateless
