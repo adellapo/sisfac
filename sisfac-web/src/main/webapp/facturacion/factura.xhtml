@@ -20,11 +20,20 @@
 
 					<f:facet name="right">
 
-						<p:commandButton value="Nuevo" icon="ui-icon-document" process="@this" actionListener="#{facturaBean.nuevo()}" update="@form" />
+						<p:commandButton value="Nuevo" icon="ui-icon-document" 
+										 process="@this" 
+										 actionListener="#{facturaBean.nuevo()}" 
+										 update="@form" />
 
-						<p:commandButton value="Guardar" icon="ui-icon-disk" process="@this :frmGen:tabVieGen:panGriCabFac" actionListener="#{facturaBean.guardar()}" update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac :frmGen:tabVieGen:datTabFac" />
+						<p:commandButton value="Guardar" icon="ui-icon-disk" 
+										 process="@this :frmGen:tabVieGen:panGriCabFac" 
+										 actionListener="#{facturaBean.guardar()}" 
+										 update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac :frmGen:tabVieGen:datTabFac :frmGen:tabVieGen:datTabDetFac" />
 
-						<p:commandButton value="Editar" icon="ui-icon-pencil" process="@this" actionListener="#{facturaBean.editar()}" update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac"/>
+						<p:commandButton value="Editar" icon="ui-icon-pencil" 
+										 process="@this" 
+										 actionListener="#{facturaBean.editar()}" 
+										 update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac"/>
 
 						<p:commandButton value="Eliminar" icon="ui-icon-trash" onclick="PF('diaConFac').show();"/>
 

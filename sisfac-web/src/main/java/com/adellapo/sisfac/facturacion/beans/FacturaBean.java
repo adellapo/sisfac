@@ -375,7 +375,9 @@ public class FacturaBean extends AbstractManagedBean {
 		this.facturaSel = null;
 
 		this.listaDetallesFacturas.clear();
-
+		
+		this.cliente = new Cliente();
+		
 	}
 
 	public void cargarFacturas() {
