@@ -10,44 +10,44 @@
 		<!-- Mensaje de notificación -->
 		<p:growl id="menGen"/>
 		
+		<!-- Barra de administracion de facturas -->
+		<p:toolbar>
+
+			<f:facet name="left">
+
+				<p:outputLabel value="Administración de Facturas" />
+
+			</f:facet>
+
+			<f:facet name="right">
+
+				<p:commandButton value="Nuevo" icon="ui-icon-document" 
+								 process="@this" 
+								 actionListener="#{facturaBean.nuevo()}" 
+								 update="@form" />
+
+				<p:commandButton value="Guardar" icon="ui-icon-disk" 
+								 process="@this :frmGen:tabVieGen:panGriCabFac" 
+								 actionListener="#{facturaBean.guardar()}" 
+								 update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac :frmGen:tabVieGen:datTabFac :frmGen:tabVieGen:datTabDetFac" />
+
+				<p:commandButton value="Anular" icon="ui-icon-cancel" 
+								 process="@this"
+								 onclick="PF('diaConAnuFac').show();"/>
+
+				<p:commandButton value="Eliminar" icon="ui-icon-trash" onclick="PF('diaConFac').show();"/>
+
+			</f:facet>
+
+		</p:toolbar>
+		
+		<br />
+
 		<!-- Visor por Tabs -->
 		<p:tabView id="tabVieGen">
 
-			<!-- Primera Tab ==> para generar una factura -->
+			<!-- PRIMERA TAB ==> para generar una factura -->
 			<p:tab title="Generar Factura">
-
-				<p:toolbar>
-
-					<f:facet name="right">
-
-						<p:commandButton value="Nuevo" icon="ui-icon-document" 
-										 process="@this" 
-										 actionListener="#{facturaBean.nuevo()}" 
-										 update="@form" />
-
-						<p:commandButton value="Guardar" icon="ui-icon-disk" 
-										 process="@this :frmGen:tabVieGen:panGriCabFac" 
-										 actionListener="#{facturaBean.guardar()}" 
-										 update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac :frmGen:tabVieGen:datTabFac :frmGen:tabVieGen:datTabDetFac" />
-
-						<p:commandButton value="Editar" icon="ui-icon-pencil" 
-										 process="@this" 
-										 actionListener="#{facturaBean.editar()}" 
-										 update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac"/>
-
-						<p:commandButton value="Eliminar" icon="ui-icon-trash" onclick="PF('diaConFac').show();"/>
-
-					</f:facet>
-
-					<f:facet name="left">
-
-						<p:outputLabel value="Administración de Facturas" />
-
-					</f:facet>
-
-				</p:toolbar>
-
-				<br />
 				
 				<!-- Panel Administrar Facturas -->
 				<p:panelGrid id="panGriCabFac" columns="4" style="width:100%;">
@@ -136,7 +136,7 @@
 
 			</p:tab>
 
-			<!-- Segunda Tab ==> para ver las facturas -->
+			<!-- SEGUNDA TAB ==> para ver las facturas -->
 			<p:tab title="Listar Factura">
 
 				<!-- Panel de Busqueda -->
@@ -155,8 +155,10 @@
 				<br />
 
 				<!-- Tabla Facturas -->
-				<p:dataTable id="datTabFac" value="#{facturaBean.listaFacturas}" var="fac">
+				<p:dataTable id="datTabFac" value="#{facturaBean.listaFacturas}" var="fac" selectionMode="single" rowKey="#{fac.facCodigo}">
 
+					<p:ajax event="rowSelect" listener="#{facturaBean.seleccionarFactura}" />
+					
 					<p:column headerText="Número">
 						<p:outputLabel value="#{fac.facNumero}"/>
 					</p:column>
@@ -189,6 +191,10 @@
 						</p:dataList>
 					</p:column>
 
+					<p:column headerText="Estado">
+						<p:outputLabel value="#{fac.facEstado eq '1' ? 'EMITIDO' : 'ANULADO'}" />
+					</p:column>
+					
 				</p:dataTable>
 
 			</p:tab>
@@ -273,6 +279,20 @@
 				<p:commandButton value="Si" process="@this :frmGen:tabVieGen:spiSubFac :frmGen:tabVieGen:spiImpFac :frmGen:tabVieGen:spiTotFac" actionListener="#{facturaBean.eliminarDetalle()}" update=":frmGen:menGen :frmGen:tabVieGen:datTabDetFac :frmGen:tabVieGen:spiSubFac :frmGen:tabVieGen:spiImpFac :frmGen:tabVieGen:spiTotFac" oncomplete="PF('diaConEliDetFac').hide();" />
 	
 				<p:commandButton value="No" onclick="PF('diaConEliDetFac').hide();" />
+	
+			</p:panelGrid>
+	
+		</p:dialog>
+
+		<p:dialog widgetVar="diaConAnuFac" header="Confirmación Anulación Factura">
+	
+			<p:panelGrid columns="3">
+	
+				<p:outputLabel value="Desea anular la Factura?" />
+	
+				<p:commandButton value="Si" process="@this" actionListener="#{facturaBean.anular()}" update=":frmGen:menGen :frmGen:tabVieGen:datTabFac" oncomplete="PF('diaConAnuFac').hide();" />
+	
+				<p:commandButton value="No" onclick="PF('diaConAnuFac').hide();" />
 	
 			</p:panelGrid>
 	

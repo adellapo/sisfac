@@ -21,6 +21,7 @@ import com.adellapo.sisfac.entidad.Producto;
 import com.adellapo.sisfac.negocio.ClienteFacade;
 import com.adellapo.sisfac.negocio.FacturaFacade;
 import com.adellapo.sisfac.negocio.ProductoFacade;
+import com.adellapo.sisfac.util.ConstanteWeb;
 
 @ManagedBean
 @ViewScoped
@@ -191,6 +192,8 @@ public class FacturaBean extends AbstractManagedBean {
 
 					factura.setCliente(cliente);
 
+					factura.setFacEstado(ConstanteWeb.EMITIDO.getValorNumerico());
+					
 					factura.setDetalleFacturas(listaDetallesFacturas);
 
 					adminFactura.guardar(factura);
@@ -217,10 +220,58 @@ public class FacturaBean extends AbstractManagedBean {
 
 	}
 
-	public void editar() {
+	public void anular() {
+
+		try {
+
+			if (facturaSel != null) {
+
+				facturaSel.setFacEstado(ConstanteWeb.ANULADO.getValorNumerico());
+
+				adminFactura.actualizar(facturaSel);
+
+				anadirMensajeInformacion("Factura anulada (código: " + facturaSel.getFacCodigo() + ")");
+
+				cargarFacturas();
+
+				resetearFormulario();
+
+			} else {
+
+				anadirMensajeAdvertencia("Seleccione una Factura");
+
+			}
+
+		} catch (Exception e) {
+
+			anadirMensajeError("Error al anular Factura");
+
+		}
+
 	}
 
 	public void eliminar() {
+
+		try {
+
+			if (facturaSel != null) {
+
+				adminFactura.eliminar(facturaSel);
+
+				anadirMensajeInformacion("Factura eliminada");
+
+				cargarFacturas();
+
+				resetearFormulario();
+
+			}
+
+		} catch (Exception e) {
+
+			anadirMensajeError("No se pudo eliminar Factura: " + e.getMessage());
+
+		}
+
 	}
 
 	public void anadirDetalle() {
@@ -360,6 +411,9 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	public void seleccionarFactura(SelectEvent se) {
+
+		this.facturaSel = (Factura) se.getObject();
+
 	}
 
 	public void seleccionarDetalleFactura(SelectEvent se) {
@@ -375,9 +429,9 @@ public class FacturaBean extends AbstractManagedBean {
 		this.facturaSel = null;
 
 		this.listaDetallesFacturas.clear();
-		
+
 		this.cliente = new Cliente();
-		
+
 	}
 
 	public void cargarFacturas() {

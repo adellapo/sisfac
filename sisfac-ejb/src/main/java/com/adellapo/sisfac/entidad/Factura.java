@@ -36,6 +36,9 @@ public class Factura implements Serializable {
 	@Column(name = "fac_total")
 	private BigDecimal facTotal;
 
+	@Column(name = "fac_estado")
+	private int facEstado;
+	
 	// bi-directional many-to-one association to DetalleFactura
 	// 1 - CASCADE
 	@OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -95,6 +98,14 @@ public class Factura implements Serializable {
 
 	public void setFacTotal(BigDecimal facTotal) {
 		this.facTotal = facTotal;
+	}
+
+	public int getFacEstado() {
+		return facEstado;
+	}
+
+	public void setFacEstado(int facEstado) {
+		this.facEstado = facEstado;
 	}
 
 	public List<DetalleFactura> getDetalleFacturas() {
