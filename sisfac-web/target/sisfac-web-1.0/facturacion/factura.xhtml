@@ -24,7 +24,7 @@
 				<p:commandButton value="Nuevo" icon="ui-icon-document" 
 								 process="@this" 
 								 actionListener="#{facturaBean.nuevo()}" 
-								 update="@form" />
+								 update=":frmGen:menGen :frmGen:tabVieGen:panGriCabFac :frmGen:tabVieGen:datTabDetFac" />
 
 				<p:commandButton value="Guardar" icon="ui-icon-disk" 
 								 process="@this :frmGen:tabVieGen:panGriCabFac" 
@@ -45,8 +45,9 @@
 
 		<!-- Visor por Tabs -->
 		<p:tabView id="tabVieGen">
-
-			<!-- PRIMERA TAB ==> para generar una factura -->
+		
+			<!-- ***************** PRIMERA TAB ***************** -->
+						
 			<p:tab title="Generar Factura">
 				
 				<!-- Panel Administrar Facturas -->
@@ -108,7 +109,7 @@
 				<br />
 				
 				<!-- Tabla Detalle Factura -->
-				<p:dataTable id="datTabDetFac" value="#{facturaBean.listaDetalles}" var="detFac" selectionMode="single" rowKey="#{detFac.detfacCodigoTmp}">
+				<p:dataTable id="datTabDetFac" value="#{facturaBean.listaDetallesFacturas}" var="detFac" selectionMode="single" rowKey="#{detFac.detfacCodigoTmp}">
 
 					<p:ajax event="rowSelect" listener="#{facturaBean.seleccionarDetalleFactura}" />
 					
@@ -136,20 +137,27 @@
 
 			</p:tab>
 
-			<!-- SEGUNDA TAB ==> para ver las facturas -->
+			<!-- ***************** SEGUNDA TAB ***************** -->
+			
 			<p:tab title="Listar Factura">
 
 				<!-- Panel de Busqueda -->
-				<p:panelGrid id="panGriBusFac" columns="4" style="width:100%;">
+				<p:panelGrid id="panGriBusFac" columns="5" >
 
-					<p:outputLabel value="Buscar Por:" />
+					<p:outputLabel value="Buscar Por:" for="txtBusPor" />
+					<p:selectOneMenu id="cmbBusPor" value="#{facturaBean.busquedaPor}" effect="blind" >
+						<f:selectItem itemLabel="Seleccione una opción de busqueda" itemValue="" noSelectionOption="true" />
+						<f:selectItem itemLabel="Número" itemValue="Numero" />
+						<f:selectItem itemLabel="Cliente" itemValue="Cliente" />
+						<f:selectItem itemLabel="Estado" itemValue="Estado" />
+						<f:selectItem itemLabel="Fecha" itemValue="Fecha" />
+					</p:selectOneMenu>
+					
+					<p:inputText id="txtBusPor" required="true" value="#{facturaBean.valorBusquedaPor}" />
 
-					<p:selectOneMenu id="cmbBusPor"></p:selectOneMenu>
+					<p:commandButton icon="ui-icon-search" process="@this :frmGen:tabVieGen:panGriBusFac" actionListener="#{facturaBean.buscarFacturas}" update=":frmGen:menGen :frmGen:tabVieGen:datTabFac" />
 
-					<p:inputText />
-
-					<p:commandButton icon="ui-icon-search" />
-
+					<p:commandButton icon="ui-icon-refresh" process="@this" actionListener="#{facturaBean.resetearTablaFacturas()}" update=":frmGen:tabVieGen:panGriBusFac :frmGen:tabVieGen:datTabFac"/>
 				</p:panelGrid>
 
 				<br />
@@ -200,8 +208,9 @@
 			</p:tab>
 
 		</p:tabView>
-	
-		<!-- Dialog de confirmación invocado por JS ==> PF('diaConFac') -->
+
+		<!-- ***************** DIALOGOS ***************** -->	
+		<!-- Confirmación Eliminación Factura -->
 		<p:dialog widgetVar="diaConFac" header="Confirmación Eliminación">
 	
 			<p:panelGrid columns="3">
@@ -216,6 +225,7 @@
 	
 		</p:dialog>
 		
+		<!-- Añadir Detalle Factura -->
 		<p:dialog widgetVar="diaAnaDetFac" header="Añadir Detalle">
 			
 			<p:toolbar>
@@ -245,32 +255,33 @@
 				itemLabel="#{pro.proNombre}" itemValue="#{pro}"
 				converter="#{convPro}"
 				>
-					<p:ajax event="blur" process="@this :frmGen:spiPreDetFac" listener="#{facturaBean.actualizarPrecioProducto()}" update=":frmGen:spiPreDetFac" />
+					<p:ajax event="blur" process="@this :frmGen:spiPreDetFac :frmGen:spiTotDetFac" listener="#{facturaBean.actualizarPrecioProducto()}" update=":frmGen:spiPreDetFac :frmGen:spiTotDetFac" />
 				</p:autoComplete>
 				
 				<p:outputLabel value="Observación:" for="txaObsDetFac" />
 				<p:inputTextarea id="txaObsDetFac" rows="5" cols="30" maxlength="200" 
-				value="#{facturaBean.detalle.detfacObservacion}" />
+				value="#{facturaBean.detalleFactura.detfacObservacion}" />
 
 				<p:outputLabel value="Precio:" for="spiPreDetFac" />
 				<p:spinner id="spiPreDetFac" readonly="true" 
-				value="#{facturaBean.detalle.detfacPrecio}"/>
+				value="#{facturaBean.detalleFactura.detfacPrecio}"/>
 
 				<p:outputLabel value="Cantidad:" for="spiCanDetFac" />
-				<p:spinner id="spiCanDetFac" required="true"
-				value="#{facturaBean.detalle.detfacCantidad}" >				
+				<p:spinner id="spiCanDetFac" required="true" min="1"
+				value="#{facturaBean.detalleFactura.detfacCantidad}" >				
 					<p:ajax event="blur" process="@this :frmGen:spiTotDetFac" listener="#{facturaBean.calcularTotalDetalle()}" update=":frmGen:spiTotDetFac" />
 				</p:spinner>
 				
 				<p:outputLabel value="Total:" for="spiTotDetFac" />
 				<p:spinner id="spiTotDetFac" readonly="true"
-				value="#{facturaBean.detalle.detfacTotal}" />
+				value="#{facturaBean.detalleFactura.detfacTotal}" />
 	
 			</p:panelGrid>
 		
 		</p:dialog>
-				
-		<p:dialog widgetVar="diaConEliDetFac" header="Confirmación Eliminación Detalle">
+
+		<!-- Confirmación Eliminación Detalla Factura -->				
+		<p:dialog widgetVar="diaConEliDetFac" header="Confirmación Eliminación Detalle Factura">
 	
 			<p:panelGrid columns="3">
 	
@@ -284,6 +295,7 @@
 	
 		</p:dialog>
 
+		<!-- Confirmación Anulación Factura -->
 		<p:dialog widgetVar="diaConAnuFac" header="Confirmación Anulación Factura">
 	
 			<p:panelGrid columns="3">

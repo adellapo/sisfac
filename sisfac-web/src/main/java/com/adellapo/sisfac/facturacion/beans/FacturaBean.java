@@ -2,7 +2,6 @@ package com.adellapo.sisfac.facturacion.beans;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +36,8 @@ public class FacturaBean extends AbstractManagedBean {
 	private Producto producto;
 
 	private int codTmpFac;
+	private String busquedaPor;
+	private String valorBusquedaPor;
 
 	@EJB
 	private FacturaFacade adminFactura;
@@ -108,14 +109,14 @@ public class FacturaBean extends AbstractManagedBean {
 	/**
 	 * @return the listaDetallesFacturas
 	 */
-	public List<DetalleFactura> getListaDetalles() {
+	public List<DetalleFactura> getListaDetallesFacturas() {
 		return listaDetallesFacturas;
 	}
 
 	/**
 	 * @param listaDetallesFacturas the listaDetallesFacturas to set
 	 */
-	public void setListaDetalles(List<DetalleFactura> listaDetalles) {
+	public void setListaDetallesFacturas(List<DetalleFactura> listaDetalles) {
 		this.listaDetallesFacturas = listaDetalles;
 	}
 
@@ -136,14 +137,14 @@ public class FacturaBean extends AbstractManagedBean {
 	/**
 	 * @return the detalleFactura
 	 */
-	public DetalleFactura getDetalle() {
+	public DetalleFactura getDetalleFactura() {
 		return detalleFactura;
 	}
 
 	/**
 	 * @param detalleFactura the detalleFactura to set
 	 */
-	public void setDetalle(DetalleFactura detalle) {
+	public void setDetalleFactura(DetalleFactura detalle) {
 		this.detalleFactura = detalle;
 	}
 
@@ -164,20 +165,65 @@ public class FacturaBean extends AbstractManagedBean {
 	/**
 	 * @return the detalleFacturaSel
 	 */
-	public DetalleFactura getDetalleSel() {
+	public DetalleFactura getDetalleFacturaSel() {
 		return detalleFacturaSel;
 	}
 
 	/**
 	 * @param detalleFacturaSel the detalleFacturaSel to set
 	 */
-	public void setDetalleSel(DetalleFactura detalleSel) {
+	public void setDetalleFacturaSel(DetalleFactura detalleSel) {
 		this.detalleFacturaSel = detalleSel;
+	}
+
+	/**
+	 * @return the codTmpFac
+	 */
+	public int getCodTmpFac() {
+		return codTmpFac;
+	}
+
+	/**
+	 * @param codTmpFac the codTmpFac to set
+	 */
+	public void setCodTmpFac(int codTmpFac) {
+		this.codTmpFac = codTmpFac;
+	}
+
+	/**
+	 * @return the busquedaPor
+	 */
+	public String getBusquedaPor() {
+		return busquedaPor;
+	}
+
+	/**
+	 * @param busquedaPor the busquedaPor to set
+	 */
+	public void setBusquedaPor(String busquedaPor) {
+		this.busquedaPor = busquedaPor;
+	}
+
+	/**
+	 * @return the valorBusquedaPor
+	 */
+	public String getValorBusquedaPor() {
+		return valorBusquedaPor;
+	}
+
+	/**
+	 * @param valorBusquedaPor the valorBusquedaPor to set
+	 */
+	public void setValorBusquedaPor(String valorBusquedaPor) {
+		this.valorBusquedaPor = valorBusquedaPor;
 	}
 
 	// operaciones del formulario
 
 	public void nuevo() {
+		cancelarDetalle();
+		resetearFormulario();
+		anadirMensajeInformacion("Nueva Factura");
 	}
 
 	public void guardar() {
@@ -193,7 +239,7 @@ public class FacturaBean extends AbstractManagedBean {
 					factura.setCliente(cliente);
 
 					factura.setFacEstado(ConstanteWeb.EMITIDO.getValorNumerico());
-					
+
 					factura.setDetalleFacturas(listaDetallesFacturas);
 
 					adminFactura.guardar(factura);
@@ -263,6 +309,10 @@ public class FacturaBean extends AbstractManagedBean {
 				cargarFacturas();
 
 				resetearFormulario();
+
+			} else {
+
+				anadirMensajeAdvertencia("Seleccione una Factura");
 
 			}
 
@@ -363,6 +413,10 @@ public class FacturaBean extends AbstractManagedBean {
 
 			this.detalleFactura.setDetfacPrecio(producto.getProPrecio());
 
+			this.detalleFactura.setDetfacCantidad(1);
+			
+			calcularTotalDetalle();
+
 		}
 
 	}
@@ -384,6 +438,54 @@ public class FacturaBean extends AbstractManagedBean {
 	}
 
 	// otras operaciones
+
+	public void buscarFacturas() {
+
+		int cantidadEncontrada = 0;
+
+		try {
+
+			// cambio valor del nombre del estado al valor numerico del estado
+
+			if (busquedaPor.equals("Estado")
+					&& valorBusquedaPor.toUpperCase().matches("(.*)" + ConstanteWeb.ANULADO + "(.*)")) {
+
+				this.valorBusquedaPor = String.valueOf(ConstanteWeb.ANULADO.getValorNumerico());
+
+			} else if (busquedaPor.equals("Estado")
+					&& valorBusquedaPor.toUpperCase().matches("(.*)" + ConstanteWeb.EMITIDO + "(.*)")) {
+
+				this.valorBusquedaPor = String.valueOf(ConstanteWeb.EMITIDO.getValorNumerico());
+
+			} else if (busquedaPor.equals("Estado")
+					&& valorBusquedaPor.toUpperCase().matches("(.*)" + ConstanteWeb.ELIMINADO + "(.*)")) {
+
+				this.valorBusquedaPor = String.valueOf(ConstanteWeb.ELIMINADO.getValorNumerico());
+
+			}
+
+			this.listaFacturas = this.adminFactura.buscarFacturas(this.busquedaPor, this.valorBusquedaPor);
+
+			if (!this.listaFacturas.isEmpty() || this.listaFacturas != null) {
+
+				cantidadEncontrada = this.listaFacturas.size();
+
+				anadirMensajeInformacion(cantidadEncontrada + " Factura" + (cantidadEncontrada > 1 ? "s " : " ")
+						+ "encontrada" + (cantidadEncontrada > 1 ? "s " : " "));
+
+			} else {
+
+				anadirMensajeAdvertencia("Facturas no encontradas");
+
+			}
+
+		} catch (Exception e) {
+
+			anadirMensajeError("Error al realizar la busqueda: " + e.getMessage());
+
+		}
+
+	}
 
 	public void buscarCliente() {
 
@@ -434,6 +536,12 @@ public class FacturaBean extends AbstractManagedBean {
 
 	}
 
+	public void resetearTablaFacturas() {
+
+		this.listaFacturas.clear();
+
+	}
+
 	public void cargarFacturas() {
 
 		try {
@@ -469,8 +577,6 @@ public class FacturaBean extends AbstractManagedBean {
 
 	@PostConstruct
 	public void inicializar() {
-
-		cargarFacturas();
 
 	}
 
