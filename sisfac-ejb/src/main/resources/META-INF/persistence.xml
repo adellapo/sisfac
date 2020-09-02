@@ -12,7 +12,12 @@
 		<class>com.adellapo.sisfac.entidad.Factura</class>
 		<class>com.adellapo.sisfac.entidad.Producto</class>
 		<class>com.adellapo.sisfac.entidad.TipoProducto</class>
-	
+		<class>com.adellapo.sisfac.entidad.Menu</class>
+		<class>com.adellapo.sisfac.entidad.Permiso</class>
+		<class>com.adellapo.sisfac.entidad.PermisoPK</class>
+		<class>com.adellapo.sisfac.entidad.Rol</class>
+		<class>com.adellapo.sisfac.entidad.Usuario</class>
+		
 		<properties>
 			<property name="eclipselink.logging.level.sql" value="FINE" />
 			<property name="eclipselink.logging.parameters" value="true" />
@@ -21,3 +26,4 @@
 	</persistence-unit>
 	
 </persistence>
+

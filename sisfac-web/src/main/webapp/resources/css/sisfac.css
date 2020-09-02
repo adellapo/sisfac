@@ -1,11 +1,28 @@
 @charset "UTF-8";
 
-.etiqueta{
-	font-size: 11px;
+.etiqueta {
+	font-size: 1.5em;
 	font-weight: bold;
-	color: blue;
+	padding-top: 1.5em;
 }
 
-.ui-inputfield{
-	background-color: gray !important;
+input[readonly] {
+	background-color: RGB(195, 205, 235) !important;
+}
+
+/* Estilos para el DataTable */
+.ui-datatable {
+	text-align: center !important;
+}
+
+.ui-datatable .ui-state-hover {
+	background: none !important;
+	background-color: red !important;
+}
+
+/* Estilos para el Login */
+#panGen {
+	margin-top: 20%;
+	margin-bottom: 20%;
+	height: 60%;
 }
