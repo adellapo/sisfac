@@ -20,7 +20,7 @@
 		<version.maven.compiler>3.1</version.maven.compiler>
 		<version.sisfac>1.0</version.sisfac>
 		<version.jee>7.0</version.jee>
-		<version.junit>4.12</version.junit>
+		<version.junit>4.13.1</version.junit>
 		<version.dependency.plugin>2.6</version.dependency.plugin>
 	</properties>
 
